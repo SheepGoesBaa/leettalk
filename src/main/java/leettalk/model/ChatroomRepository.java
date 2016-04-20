@@ -1,4 +1,4 @@
-package leettalk;
+package leettalk.model;
 
 import java.util.Optional;
 

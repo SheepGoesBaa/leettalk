@@ -1,4 +1,4 @@
-package leettalk;
+package leettalk.model;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -7,12 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"name"}))
 public class Chatroom {
 
-	@OneToMany
-	private Set<Command> command;
+	@OneToMany(mappedBy = "chatroom")
+	private Set<Command> commands = new HashSet<>();
 
 	@Id
 	@GeneratedValue
@@ -20,8 +23,7 @@ public class Chatroom {
 
 	private String name;
 
-	public Chatroom() {
-		command = new HashSet<>();
+	Chatroom() {
 	}
 
 	public Chatroom(String name) {
@@ -29,12 +31,12 @@ public class Chatroom {
 		this.name = name;
 	}
 
-	public Set<Command> getCommand() {
-		return command;
+	public Set<Command> getCommands() {
+		return commands;
 	}
 
-	public void setCommand(Set<Command> command) {
-		this.command = command;
+	public void setCommands(Set<Command> command) {
+		this.commands = command;
 	}
 
 	public Long getId() {
@@ -51,6 +53,11 @@ public class Chatroom {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Chatroom [commands=" + commands + ", id=" + id + ", name=" + name + "]";
 	}
 
 }
