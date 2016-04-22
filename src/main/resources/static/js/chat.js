@@ -21,11 +21,18 @@ function connect() {
 			showMessage(JSON.parse(message.body).message);
 		});
 		stompClient.subscribe('/app/' + chatroomName + '/chat.commands', function(commands) {
-			console.log(JSON.parse(commands.body));
+			commands = JSON.parse(commands.body);
+			for (var i = 0; i < commands.length; i++) {
+				addCommand(commands[i]);
+			}
 		})
 		stompClient.subscribe('/topic/' + chatroomName + '/chat.commands.add', function(command) {
-			console.log(JSON.parse(command.body));
+			console.log('added command' + JSON.parse(command.body));
+			addCommand(JSON.parse(command.body));
 		})
+		stompClient.subscribe('/topic/' + chatroomName + '/chat.commands.delete', function(command) {
+			deleteCommand(JSON.parse(command.body));
+		}) 
 	});
 }
 
@@ -43,6 +50,25 @@ function sendMessage() {
 	stompClient.send('/app/' + chatroomName + '/chat.message', {}, JSON.stringify({
 		'message' : message
 	}));
+}
+
+function addCommand(command) {
+	var phrase = command.phrase;
+	var p = document.createElement('p');
+	p.style.wordWrap = 'break-word';
+	p.appendChild(document.createTextNode('!' + phrase));
+	document.getElementById('commands').appendChild(p);
+}
+
+function deleteCommand(command) {
+	var phrase = command.phrase;
+	var commands = document.getElementById('commands');
+	for (var i = 0; i < commands.childNodes.length; i++) {
+		console.log(commands.childNodes[i].textContent);
+		if (commands.childNodes[i].textContent == '!' + command.phrase) {
+			commands.removeChild(commands.childNodes[i]);
+		}
+	}
 }
 
 function showMessage(message) {

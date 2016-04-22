@@ -1,8 +1,11 @@
 package leettalk.util;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +28,11 @@ public class CommandProcessor {
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
 	
-	private static String commandDest = "/chat.commands.add";
+	@Value("${command-add-dest}")
+	private String commandAddDest;
+	
+	@Value("${command-delete-dest}")
+	private String commandDeleteDest;
 	
 	public CommandProcessor() {
 		super();
@@ -41,7 +48,7 @@ public class CommandProcessor {
 				addCommand(chatroom, splitCommand[1], splitCommand[2], splitCommand[3]);
 				break;
 			case "deleteCommand":
-				deleteCommand(command, chatroom);
+				deleteCommand(splitCommand[1], chatroom);
 				break;
 			default:
 				//TODO
@@ -59,15 +66,24 @@ public class CommandProcessor {
 		Command command = new Command(chatroom, phrase, sourceCode, Integer.valueOf(language));
 		commandRepository.save(command);
 		
-		
 		//send broadcast
-		messagingTemplate.convertAndSend("/topic/" + chatroom.getName() + commandDest, command);
+		messagingTemplate.convertAndSend(String.format(commandAddDest, chatroom.getName()), command);
 		log.info("did it boys");
-		log.info("/topic/" + chatroom.getName() + commandDest);
+		log.info(String.format(commandAddDest, chatroom.getName()));
 		return "Added command";
 	}
 	
-	public String deleteCommand(String command, Chatroom chatroom) {
-		return "Removed command";
+	public String deleteCommand(String phrase, Chatroom chatroom) {
+		Optional<Command> commandOpt = commandRepository.findByPhraseAndChatroom(phrase, chatroom);
+		if (commandOpt.isPresent()) {
+			commandRepository.delete(commandOpt.get());
+			
+			//send broadcast
+			messagingTemplate.convertAndSend(String.format(commandDeleteDest, chatroom.getName()), commandOpt.get());
+			return "Deleted command";
+		} else {
+			//idk
+			return "Command not found";
+		}
 	}
 }
