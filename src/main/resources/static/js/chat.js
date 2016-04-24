@@ -25,14 +25,14 @@ function connect() {
 			for (var i = 0; i < commands.length; i++) {
 				addCommand(commands[i]);
 			}
-		})
+		});
 		stompClient.subscribe('/topic/' + chatroomName + '/chat.commands.add', function(command) {
 			console.log('added command' + JSON.parse(command.body));
 			addCommand(JSON.parse(command.body));
-		})
+		});
 		stompClient.subscribe('/topic/' + chatroomName + '/chat.commands.delete', function(command) {
 			deleteCommand(JSON.parse(command.body));
-		}) 
+		}); 
 	});
 }
 
