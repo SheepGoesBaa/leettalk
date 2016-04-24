@@ -56,7 +56,7 @@ public class TestController {
 	public SubmissionResult testapi() {
 		int id = SphereEngineApi.createSubmission("#include <stdio.h>\nint main() {\nprintf(\"Hello World!\");}\n", 11, "");
 		SubmissionResult result;
-		while ((result = SphereEngineApi.getSubmissionResult(id)).getStatus() != 0) {
+		while (!(result = SphereEngineApi.getSubmissionResult(id)).isDone()) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

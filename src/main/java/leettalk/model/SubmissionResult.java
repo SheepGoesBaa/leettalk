@@ -36,4 +36,8 @@ public class SubmissionResult {
 	public void setResult(int result) {
 		this.result = result;
 	}
+	
+	public boolean isDone() {
+		return status == 0;
+	}
 }
