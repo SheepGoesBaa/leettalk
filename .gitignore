@@ -13,7 +13,6 @@
 .recommenders
 bin
 build
-lib/
 target
 .factorypath
 .springBeans
@@ -41,6 +40,8 @@ overridedb.*
 /mvnw.bat
 
 application.properties
+
+
 
 
 
