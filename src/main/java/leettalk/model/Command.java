@@ -25,6 +25,10 @@ public class Command {
 	Command() { // for jpa
 
 	}
+	
+	public Command(String phrase) {
+		this.phrase = phrase;
+	}
 
 	public Command(Chatroom chatroom, String phrase, String sourceCode, Integer language) {
 		this.chatroom = chatroom;

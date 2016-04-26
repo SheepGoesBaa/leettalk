@@ -18,7 +18,7 @@ function connect() {
 		setConnected(true);
 		console.log('Connected to ' + frame);
 		stompClient.subscribe('/topic/' + chatroomName + '/chat.message', function(message) {
-			showMessage(JSON.parse(message.body).message);
+			showMessage(JSON.parse(message.body));
 		});
 		stompClient.subscribe('/app/' + chatroomName + '/chat.commands', function(commands) {
 			commands = JSON.parse(commands.body);
@@ -54,10 +54,9 @@ function sendMessage() {
 
 function addCommand(command) {
 	var phrase = command.phrase;
-	var p = document.createElement('p');
-	p.style.wordWrap = 'break-word';
-	p.appendChild(document.createTextNode('!' + phrase));
-	document.getElementById('commands').appendChild(p);
+	var code = document.createElement('p');
+	code.appendChild(document.createTextNode('!' + phrase));
+	document.getElementById('commands').appendChild(code);
 }
 
 function deleteCommand(command) {
@@ -73,8 +72,7 @@ function deleteCommand(command) {
 
 function showMessage(message) {
 	var response = document.getElementById('response');
-	var p = document.createElement('p');
-	p.style.wordWrap = 'break-word';
-	p.appendChild(document.createTextNode(message));
-	response.appendChild(p);
+	var code = document.createElement('p');
+	code.appendChild(document.createTextNode(message.username + ": " + message.message));
+	response.appendChild(code);
 }

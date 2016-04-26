@@ -2,6 +2,9 @@ package leettalk.util;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,31 +49,67 @@ public class SphereEngineApi {
 		return template;
 	}
 
+	public Map<Integer, String> listLanguages() {
+		Map<Integer, String> map = new TreeMap<>();
+
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).pathSegment("api").pathSegment("v3")
+				.pathSegment("languages").queryParam("access_token", token);
+
+		Map<String, String> languages = template.getForObject(builder.toUriString(), LinkedHashMap.class);
+		System.out.println(languages);
+		for (String key : languages.keySet()) {
+			map.put(Integer.valueOf(key), languages.get(key));
+		}
+		return map;
+	}
+
 	public int createSubmission(String sourceCode, int language, String input) {
 		Submission submission = new Submission(sourceCode, language, input);
-		
+
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).pathSegment("api").pathSegment("v3")
-				.pathSegment("submissions").queryParam("access_token", token);	
-		
+				.pathSegment("submissions").queryParam("access_token", token);
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<Submission> entity = new HttpEntity<Submission>(submission, headers);
-		
 
-		ResponseEntity<SubmissionId> response = template.exchange(builder.toUriString(), HttpMethod.POST, entity, SubmissionId.class);
-		
+		ResponseEntity<SubmissionId> response = template.exchange(builder.toUriString(), HttpMethod.POST, entity,
+				SubmissionId.class);
+
 		return Integer.valueOf(response.getBody().getId());
 	}
 
 	public SubmissionResult getSubmissionResult(int id) {
-		ResultOptions options = new ResultOptions(id, false, false, true, false, false);
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).pathSegment("api").pathSegment("v3")
-				.pathSegment("submissions").pathSegment(Integer.toString(id)).queryParam("access_token", token).queryParam("withOutput", true);
-		
+				.pathSegment("submissions").pathSegment(Integer.toString(id)).queryParam("access_token", token)
+				.queryParam("withOutput", true);
+
 		SubmissionResult response = template.getForObject(builder.toUriString(), SubmissionResult.class);
-		
+
 		return response;
+	}
+}
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+class Language {
+	private int key;
+	private String value;
+
+	public int getKey() {
+		return key;
+	}
+
+	public void setKey(int key) {
+		this.key = key;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 }
 
@@ -210,21 +249,20 @@ class SubmissionId {
 }
 
 class FuckSphereEngineInterceptor implements ClientHttpRequestInterceptor {
-	//because sending json and specifing text/html is cool
+	// because sending json and specifing text/html is cool
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
 			throws IOException {
 		ClientHttpResponse response = execution.execute(request, body);
 		HttpHeaders headers = response.getHeaders();
-		
+
 		if (headers.containsKey("Content-Type")) {
 			headers.remove("Content-Type");
 		}
-		
+
 		headers.add("Content-Type", "application/json");
-		
+
 		return response;
 	}
-	
-	
+
 }

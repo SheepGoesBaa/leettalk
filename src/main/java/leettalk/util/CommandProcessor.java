@@ -1,5 +1,8 @@
 package leettalk.util;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -28,11 +31,20 @@ public class CommandProcessor {
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
 	
+	@Autowired
+	private SphereEngineApi sphereEngineApi;
+	
 	@Value("${command-add-dest}")
 	private String commandAddDest;
 	
 	@Value("${command-delete-dest}")
 	private String commandDeleteDest;
+	
+	private final Collection<Command> builtinCommands = Arrays.asList(new Command[]{new Command("addCommand"),
+			new Command("deleteCommand"),
+			new Command("languages"),
+			new Command("source")
+			});
 	
 	public CommandProcessor() {
 		super();
@@ -45,17 +57,19 @@ public class CommandProcessor {
 		switch (splitCommand[0]) {
 			case "addCommand":
 				splitCommand = command.split(" ", 4);
-				addCommand(chatroom, splitCommand[1], splitCommand[2], splitCommand[3]);
-				break;
+				return addCommand(chatroom, splitCommand[1], splitCommand[2], splitCommand[3]);
 			case "deleteCommand":
-				deleteCommand(splitCommand[1], chatroom);
-				break;
+				return deleteCommand(splitCommand[1], chatroom);
+			case "languages":
+				return listLanguages();
+			case "source" :
+				return source(chatroom, splitCommand[1]);
 			default:
 				//TODO
 		}
 		
 		
-		return "something test something " + command;
+		return "Error processing command";
 	}
 	
 	public boolean isCommand(String command) { 
@@ -63,13 +77,19 @@ public class CommandProcessor {
 	}
 	
 	public String addCommand(Chatroom chatroom, String phrase, String language, String sourceCode) {
-		Command command = new Command(chatroom, phrase, sourceCode, Integer.valueOf(language));
+		if (commandRepository.findByPhraseAndChatroom(phrase, chatroom).isPresent()) {
+			return "Unable to add command (already exists)";
+		}
+		try {
+			Command command = new Command(chatroom, phrase, sourceCode, Integer.valueOf(language));
+		} catch (Exception e) {
+			return "Failed to add command";
+		}
+		
 		commandRepository.save(command);
 		
 		//send broadcast
 		messagingTemplate.convertAndSend(String.format(commandAddDest, chatroom.getName()), command);
-		log.info("did it boys");
-		log.info(String.format(commandAddDest, chatroom.getName()));
 		return "Added command";
 	}
 	
@@ -82,8 +102,34 @@ public class CommandProcessor {
 			messagingTemplate.convertAndSend(String.format(commandDeleteDest, chatroom.getName()), commandOpt.get());
 			return "Deleted command";
 		} else {
-			//idk
 			return "Command not found";
 		}
+	}
+	
+	public String listLanguages() {
+		Map<Integer, String> languages = sphereEngineApi.listLanguages();
+		
+		StringBuilder sb = new StringBuilder();
+		for (Integer i : languages.keySet()) {
+			sb.append(i);
+			sb.append(" : ");
+			sb.append(languages.get(i));
+			sb.append('\n');
+		}
+		
+		return sb.toString();
+	}
+	
+	public String source(Chatroom chatroom, String phrase) {
+		Optional<Command> commandOpt = commandRepository.findByPhraseAndChatroom(phrase, chatroom);
+		if (commandOpt.isPresent()) {
+			return "Language: " + commandOpt.get().getLanguage() + "\n\n" + commandOpt.get().getSourceCode();
+		}
+		
+		return "Command not found";
+	}
+	
+	public Collection<Command> getBuiltinCommands() {
+		return this.builtinCommands;
 	}
 }

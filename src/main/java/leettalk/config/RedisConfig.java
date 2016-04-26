@@ -1,5 +1,7 @@
 package leettalk.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,6 +21,8 @@ import redis.embedded.RedisServer;
 @Configuration
 public class RedisConfig {
 
+	
+	
 	@Bean
 	public static RedisServerBean redisServer() {
 		return new RedisServerBean();
@@ -33,6 +37,7 @@ public class RedisConfig {
 	static class RedisServerBean implements InitializingBean, DisposableBean, BeanDefinitionRegistryPostProcessor {
 
 		private RedisServer redisServer;
+		Logger log = LoggerFactory.getLogger(RedisServerBean.class);
 
 		@Override
 		public void afterPropertiesSet() throws Exception {
@@ -43,10 +48,15 @@ public class RedisConfig {
 
 		@Override
 		public void destroy() throws Exception {
-			if (redisServer != null) {
-				redisServer.stop();
-			}
+			redisServer.stop();
+			log.info("Shut down Redis server");
 		}
+		
+//		@PreDestroy
+//		public void stopRedis() {
+//			redisServer.stop();
+//			System.out.println("redis supposed to be killed");
+//		}
 
 		@Override
 		public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
