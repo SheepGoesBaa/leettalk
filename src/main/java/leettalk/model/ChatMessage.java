@@ -1,17 +1,29 @@
 package leettalk.model;
 
 public class ChatMessage {
-	
-	//private User user;
-	
+
+	private String username;
 	private String message;
-	
+
 	public ChatMessage() {
 		super();
 	}
-	
+
 	public ChatMessage(String message) {
 		this.message = message;
+	}
+	
+	public ChatMessage(String username, String message) {
+		this.username = username;
+		this.message = message;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getMessage() {
@@ -26,5 +38,5 @@ public class ChatMessage {
 	public String toString() {
 		return "ChatMessage [message=" + message + "]";
 	}
-	
+
 }
