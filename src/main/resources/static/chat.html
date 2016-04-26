@@ -4,6 +4,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>LeetTalk</title>
+<link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" media="screen" />
 <script src="/lib/sockjs.min.js"></script>
 <script src="/lib/stomp.min.js"></script>
 <script src="/js/chat.js"></script>
@@ -18,17 +19,23 @@
 
 	<div>
 		<div>
-			<label>Chatroom name:</label> <input type="text" id="chatroom-name" />
-			<button id="connect" onclick="connect();">Connect</button>
-			<button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+			<label class="label label-default">Chatroom name:</label> <input type="text" id="chatroom-name" />
+			<button class="btn btn-primary" id="connect" onclick="connect();">Connect</button>
+			<button class="btn btn-danger" id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
 		</div>
 		<div id="conversation" style="visibility: hidden;">
 			<label>message:</label><input type="text" id="message" />
+			<button class="btn btn-success" id="send-message" onclick="sendMessage();">Send</button>
 			<br/>
-			<button id="send-message" onclick="sendMessage();">Send</button>
-			<pre id="response"></pre>
-			<pre>------------------------------------</pre>
-			<pre id="commands"></pre>
+			<h1> Chat</h1>
+			<!--  <pre id="response"></pre> -->
+			<pre id="response" style="float: left; width: 45%; margin: 2.5%">
+			</pre>
+			<!--  <pre>------------------------------------</pre> -->
+			<!--  <pre id="commands"></pre> -->
+			<div class="panel panel-info" id="commands" style="float: right; width: 45%; margin: 2.5%">
+			<div class="panel-heading" style="text-align: left; overflow: auto;"> Commands</div>
+			 </div>
 		</div>
 	</div>
 
