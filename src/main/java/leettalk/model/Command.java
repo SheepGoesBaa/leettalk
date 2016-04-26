@@ -1,5 +1,6 @@
 package leettalk.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,6 +20,8 @@ public class Command {
 	private Long id;
 
 	private String phrase;
+	
+	@Column(length = 10000)
 	private String sourceCode;
 	private Integer language;
 
