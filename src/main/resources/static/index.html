@@ -4,6 +4,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>LeetTalk</title>
+<link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" media="screen" />
 <script src="/lib/sockjs.min.js"></script>
 <script src="/lib/stomp.min.js"></script>
 <script src="/js/chat.js"></script>
@@ -18,16 +19,17 @@
 
 	<div>
 		<div>
-			<label>Chatroom name:</label> <input type="text" id="chatroom-name" />
-			<button id="connect" onclick="connect();">Connect</button>
-			<button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+			<label class="label label-default">User Name:</label> <input type="text" id="username" />
+			<label class="label label-default">Chatroom name:</label> <input type="text" id="chatroom-name" />
+			<button class="btn btn-primary" id="connect" onclick="connect();">Connect</button>
+			<button class="btn btn-danger" id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
 		</div>
 		<div id="conversation" style="visibility: hidden;">
-			<label>message:</label><input type="text" id="message" />
-			<button id="send-message" onclick="sendMessage();">Send</button>
+			<label class="label label-default">message:</label><input type="text" id="message" />
+			<button class="btn btn-success" id="send-message" onclick="sendMessage();">Send</button>
 			<p id="response"></p>
 			<p>------------------------------------</p>
-			<p id="commands"></p>
+			<div id="commands"></div>
 		</div>
 	</div>
 
