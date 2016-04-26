@@ -4,10 +4,13 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>LeetTalk</title>
-<link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+<link
+	href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+	rel="stylesheet" media="screen" />
 <script src="/lib/sockjs.min.js"></script>
 <script src="/lib/stomp.min.js"></script>
 <script src="/js/chat.js"></script>
+<link href="/css/main.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -19,23 +22,42 @@
 
 	<div>
 		<div>
-			<label class="label label-default">Chatroom name:</label> <input type="text" id="chatroom-name" />
+			<h3>
+				<label class="label label-default">Chatroom name:</label> <input
+					type="text" id="chatroom-name" />
+			</h3>
 			<button class="btn btn-primary" id="connect" onclick="connect();">Connect</button>
-			<button class="btn btn-danger" id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+			<button class="btn btn-danger" id="disconnect" disabled="disabled"
+				onclick="disconnect();">Disconnect</button>
 		</div>
-		<div id="conversation" style="visibility: hidden;">
-			<label>message:</label><input type="text" id="message" />
-			<button class="btn btn-success" id="send-message" onclick="sendMessage();">Send</button>
-			<br/>
-			<h1> Chat</h1>
-			<!--  <pre id="response"></pre> -->
-			<pre id="response" style="float: left; width: 45%; margin: 2.5%">
-			</pre>
-			<!--  <pre>------------------------------------</pre> -->
-			<!--  <pre id="commands"></pre> -->
-			<div class="panel panel-info" id="commands" style="float: right; width: 45%; margin: 2.5%">
-			<div class="panel-heading" style="text-align: left; overflow: auto;"> Commands</div>
-			 </div>
+		<br />
+		<div id="conversation" class="container" style="visibility: hidden;">
+			<div class="row">
+				<br />
+				<h1>Chat</h1>
+				<!--  <pre id="response"></pre> -->
+				<div class="chat-box col-xs-8">
+					<pre id="response"></pre>
+				</div>
+				<!--  <pre>------------------------------------</pre> -->
+				<!--  <pre id="commands"></pre> -->
+				<div class="panel panel-info col-xs-4" id="commands">
+					<div class="panel-heading"
+						style="text-align: left; overflow: auto;">Commands</div>
+
+				</div>
+			</div>
+			<div class="row">
+
+				<div class="input-group">
+					<input id="message" type="text" class="form-control" style="display: inline-block"
+						onclick="sendMessage();" />  
+						<span class="input-group-btn">
+					<button class="btn btn-success" id="send-message" style="display: inline-block"
+						onclick="sendMessage();">Send</button>
+						</span>
+				</div>
+			</div>
 		</div>
 	</div>
 
