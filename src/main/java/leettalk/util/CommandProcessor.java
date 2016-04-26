@@ -77,7 +77,7 @@ public class CommandProcessor {
 	}
 	
 	public String addCommand(Chatroom chatroom, String phrase, String language, String sourceCode) {
-		if (commandRepository.findByPhraseAndChatroom(phrase, chatroom).isPresent()) {
+		if (commandRepository.findByPhraseAndChatroom(phrase, chatroom).isPresent() || builtinCommands.contains(new Command(phrase))) {
 			return "Unable to add command (already exists)";
 		}
 		Command command = null;
