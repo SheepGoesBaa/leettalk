@@ -80,8 +80,9 @@ public class CommandProcessor {
 		if (commandRepository.findByPhraseAndChatroom(phrase, chatroom).isPresent()) {
 			return "Unable to add command (already exists)";
 		}
+		Command command = null;
 		try {
-			Command command = new Command(chatroom, phrase, sourceCode, Integer.valueOf(language));
+			command = new Command(chatroom, phrase, sourceCode, Integer.valueOf(language));
 		} catch (Exception e) {
 			return "Failed to add command";
 		}
