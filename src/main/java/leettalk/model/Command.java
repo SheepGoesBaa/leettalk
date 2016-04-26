@@ -29,6 +29,12 @@ public class Command {
 	public Command(String phrase) {
 		this.phrase = phrase;
 	}
+	
+	public Command(Chatroom chatroom, String phrase) {
+		this();
+		this.chatroom = chatroom;
+		this.phrase = phrase;
+	}
 
 	public Command(Chatroom chatroom, String phrase, String sourceCode, Integer language) {
 		this.chatroom = chatroom;
@@ -81,6 +87,37 @@ public class Command {
 	public String toString() {
 		return "Command [chatroom=" + chatroom + ", id=" + id + ", phrase=" + phrase + ", sourceCode=" + sourceCode
 				+ ", language=" + language + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((chatroom == null) ? 0 : chatroom.hashCode());
+		result = prime * result + ((phrase == null) ? 0 : phrase.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Command other = (Command) obj;
+		if (chatroom == null) {
+			if (other.chatroom != null)
+				return false;
+		} else if (!chatroom.equals(other.chatroom))
+			return false;
+		if (phrase == null) {
+			if (other.phrase != null)
+				return false;
+		} else if (!phrase.equals(other.phrase))
+			return false;
+		return true;
 	}
 
 }
