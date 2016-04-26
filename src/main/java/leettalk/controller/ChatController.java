@@ -52,6 +52,7 @@ public class ChatController {
 		if (commandProcessor.isCommand(message.getMessage())) {
 			log.info("Processing " + message.getMessage() + " as a command");
 			messagingTemplate.convertAndSend("/topic/" + chatroomName + "/chat.message", message);
+			messagingTemplate.convertAndSend("/topic/" + chatroomName + "/chat.message", new ChatMessage("System", "Processing Command " + message.getMessage()));
 			String commandReturn = commandProcessor.process(message.getMessage(), chatroom);
 			return new ChatMessage("System", commandReturn);
 		}
